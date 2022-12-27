@@ -10,11 +10,7 @@ function handleSubmit(event) {
     var quantidade = form.elements.quantidade.value;
     // função que puxa os dados e cria as dependencias
     funcaoSeguraca(nome, quantidade);
-    // if (verificaNumeros(nome) == true) {
-    //     // verificaNumeros(nome);
-    // } else {
-    //     adicionaItem(nome, quantidade);
-    // }
+
 }
 
 
