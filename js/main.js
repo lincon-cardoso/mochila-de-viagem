@@ -1,135 +1,79 @@
-var form = document.querySelector('form');
-form.addEventListener('submit', handleSubmit);
+const form = document.getElementById("novoItem")
+const lista = document.getElementById("lista")
+const itens = JSON.parse(localStorage.getItem("itens")) || []
 
+itens.forEach( (elemento) => {
+    criaElemento(elemento)
+} )
 
-function handleSubmit(event) {
+form.addEventListener("submit", (evento) => {
+    evento.preventDefault()
 
-    event.preventDefault();
-    // Puxa valores 
-    var nome = form.elements.nome.value;
-    var quantidade = form.elements.quantidade.value;
-    // função que puxa os dados e cria as dependencias
-    funcaoSeguraca(nome, quantidade);
+    const nome = evento.target.elements['nome']
+    const quantidade = evento.target.elements['quantidade']
 
-}
+    const existe = itens.find( elemento => elemento.nome === nome.value )
 
-
-function funcaoSeguraca(nome, quantidade) {
-
-
-    var Verifca = /^[^0-9].*[^0-9]$/;
-    if (Verifca.test(nome)) {
-        itemSalvoPagina(nome, quantidade);
-        adicionaItem(nome, quantidade);
-        SalvaItemTela()
-        limpaInputs()
-    } else {
-
-        limpaInputs()
+    const itemAtual = {
+        "nome": nome.value,
+        "quantidade": quantidade.value
     }
 
-
-}
-
-function adicionaItem(nome, quantidade) {
-
-    // Cria um elemento li
-    var li = document.createElement('li');
-    var strong = document.createElement('strong');
-    var lista = document.querySelector('ul');
-    li.classList.add('item');
-
-    // Define o conteúdo do elemento li como o valor do campo "nome e quantidade"
-    strong.textContent = quantidade;
-    li.textContent = nome;
-
-    // atribuir a uma li
-
-    li.insertBefore(strong, li.firstChild);
-    //definindo li nome
-    lista.appendChild(li);
-
-
-}
-
-function limpaInputs() {
-    this.nome.value = '';
-    this.quantidade.value = '';
-}
-
-
-
-
-// function itemSalvoPagina(nome,quantidade) {
-
-//     var itensArray = [];
-//     var item = {
-//         nome: nome,
-//         quantidade: quantidade
-//     }
-
-//     itensArray.push(item);
-
-
-//     let itensArrayString = JSON.stringify(itensArray)
-//     localStorage.setItem('itensArray',itensArrayString);
-//     let colorString = JSON.parse(localStorage.getItem("itensArray"));
-
-//     console.log(colorString)
-// }
-
-
-function itemSalvoPagina(nome, quantidade) {
-    // recupera o array armazenado no localStorage
-    let itensArray = JSON.parse(localStorage.getItem("itensArray"));
-    // se o array ainda não foi criado, cria um novo
-    if (!itensArray) {
-        itensArray = [];
-    }
-    // cria o novo item
-    var item = {
-        nome: nome,
-        quantidade: quantidade
-    }
-    // adiciona o item ao array
-    itensArray.push(item);
-    // armazena o array atualizado no localStorage
-    let itensArrayString = JSON.stringify(itensArray);
-    localStorage.setItem('itensArray', itensArrayString);
-}
-
-
-function SalvaItemTela() {
-    let itensArray = JSON.parse(localStorage.getItem("itensArray"));
-    // Percorre o array de itens
-    for (let i = 0; i < itensArray.length; i++) {
-        // Recupera o item atual
-        let item = itensArray[i];
-
-        var li = document.createElement('li');
-        var strong = document.createElement('strong');
-        var lista = document.querySelector('ul');
-        li.classList.add('item')
+    if (existe) {
+        itemAtual.id = existe.id
         
-        strong.textContent = item.quantidade;
-        li.textContent = item.nome;
+        atualizaElemento(itemAtual)
 
-        li.insertBefore(strong, li.firstChild);
-        //definindo li nome
-        lista.appendChild(li);
-    
-    
+        itens[itens.findIndex(elemento => elemento.id === existe.id)] = itemAtual
+    } else {
+        itemAtual.id = itens[itens.length -1] ? (itens[itens.length-1]).id + 1 : 0;
+
+        criaElemento(itemAtual)
+
+        itens.push(itemAtual)
     }
+
+    localStorage.setItem("itens", JSON.stringify(itens))
+
+    nome.value = ""
+    quantidade.value = ""
+})
+
+function criaElemento(item) {
+    const novoItem = document.createElement("li")
+    novoItem.classList.add("item")
+
+    const numeroItem = document.createElement("strong")
+    numeroItem.innerHTML = item.quantidade
+    numeroItem.dataset.id = item.id
+    novoItem.appendChild(numeroItem)
     
+    novoItem.innerHTML += item.nome
+
+    novoItem.appendChild(botaoDeleta(item.id))
+
+    lista.appendChild(novoItem)
 }
 
+function atualizaElemento(item) {
+    document.querySelector("[data-id='"+item.id+"']").innerHTML = item.quantidade
+}
 
+function botaoDeleta(id) {
+    const elementoBotao = document.createElement("button")
+    elementoBotao.innerText = "X"
 
-// // Cria a div para o item
-// let div = document.createElement('div');
+    elementoBotao.addEventListener("click", function() {
+        deletaElemento(this.parentNode, id)
+    })
 
-// // Adiciona o nome e a quantidade do item à div
-// div.innerHTML = '<p>Nome: ' + item.nome + '</p><p>Quantidade: ' + item.quantidade + '</p>';
+    return elementoBotao
+}
 
-// // Adiciona a div ao documento
-// document.body.appendChild(div);
+function deletaElemento(tag, id) {
+    tag.remove()
+
+    itens.splice(itens.findIndex(elemento => elemento.id === id), 1)
+
+    localStorage.setItem("itens", JSON.stringify(itens))
+}

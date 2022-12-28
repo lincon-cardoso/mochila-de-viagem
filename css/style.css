@@ -9,8 +9,6 @@ html {
     display: flex;
     align-items: flex-start;
     gap: 2em;
-    width: 30%;
-    
 }
 
 .principal {
@@ -23,7 +21,6 @@ html {
     background: #C5965F;
     border-radius: 10px;
     gap: 2em;
-    
 }
   
 .mochila {
