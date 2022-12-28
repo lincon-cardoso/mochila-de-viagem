@@ -10,7 +10,7 @@ itens.forEach((element) => {
 form.addEventListener('submit', (evento) => {
   evento.preventDefault();
 
-  // exportar variavel
+  // exportarvariavel
   const nome = evento.target.elements['nome'];
   const quantidade = evento.target.elements['quantidade'];
 
