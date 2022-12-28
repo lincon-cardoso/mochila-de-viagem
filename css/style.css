@@ -9,6 +9,7 @@ html {
     display: flex;
     align-items: flex-start;
     gap: 2em;
+    margin-right: 60%;
 }
 
 .principal {
