@@ -1,58 +1,67 @@
-const form = document.getElementById("novoItem")
-const lista = document.getElementById("lista");
-const itens = [];
+const form = document.getElementById('novoItem');
+const lista = document.getElementById('lista');
+//Recebe dados do local storege e transforma em json parce para mostra na tela
+const itens = JSON.parse(localStorage.getItem('itens')) || [];
 
-form.addEventListener("submit", (evento) => {
-    evento.preventDefault();
+itens.forEach((element) => {
+  criaElemento(element);
+});
 
-    // exportar variavel 
-    const nome = evento.target.elements['nome'];
-    const quantidade = evento.target.elements['quantidade']
-    
+form.addEventListener('submit', (evento) => {
+  evento.preventDefault();
 
-    // Puxar os dados enviados
-    criaElemento(nome.value,quantidade.value)
-    limpaCampo(nome,quantidade)
+  // exportar variavel
+  const nome = evento.target.elements['nome'];
+  const quantidade = evento.target.elements['quantidade'];
 
-})
+  
 
-// chama função para criação do elmento 
-
-function criaElemento(nome, quantidade) {
-    // console.log(nome, quantidade)
-
-    //cria elementos para serem atribuidos 
-    const novoItem = document.createElement('li');
-    const numeroItem = document.createElement('strong')
-    novoItem.classList.add("item")
+ //define como um envio
+  const itemAtual = {
+    nome: nome.value,
+    quantidade: quantidade.value,
+  };
 
 
-    numeroItem.innerHTML = quantidade;
+  //sequencia de execução 
 
+  executa(itemAtual);
+  criaElemento(itemAtual);
+  limpaCampo(nome, quantidade);
 
-    novoItem.appendChild(numeroItem);
-    novoItem.innerHTML += nome;
+});
 
+// chama função para criação do elmento
 
-    lista.appendChild(novoItem);
+function criaElemento(item) {
+  // console.log(nome, quantidade)
 
-    //define como um envio 
-    const itemAtual = {
-        "nome": nome ,
-        "quantidade": quantidade
-    }
+  //cria elementos para serem atribuidos
+  const novoItem = document.createElement('li');
+  const numeroItem = document.createElement('strong');
+  novoItem.classList.add('item');
 
-    // empura item para dentro do array 
-    itens.push(itemAtual)
-    // salvando no local storege como json
-    localStorage.setItem("item",JSON.stringify(itens))
-    
-}   
+  numeroItem.innerHTML = item.quantidade;
 
-function limpaCampo(nome,quantidade){
-    nome.value = ""
-    quantidade.value = ""
+  novoItem.appendChild(numeroItem);
+  novoItem.innerHTML += item.nome;
+
+  lista.appendChild(novoItem);
+
 }
 
+function limpaCampo(nome, quantidade) {
+  nome.value = '';
+  quantidade.value = '';
+}
 
+function executa(itemAtual){
+ 
 
+  // empura item para dentro do array
+  itens.push(itemAtual);
+
+  // salvando no local storege como json
+  localStorage.setItem('itens', JSON.stringify(itens));
+  
+}
